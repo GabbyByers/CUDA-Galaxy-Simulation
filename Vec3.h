@@ -114,10 +114,13 @@ public:
     }
 
     __device__ __host__ Vec3 cross(Vec3 vec3) {
-        float _x = (y * vec3.z) - (z * vec3.y);
-        float _y = (z * vec3.x) - (x * vec3.z);
-        float _z = (x * vec3.y) - (y * vec3.x);
-        return Vec3(_x, _y, _z);
+        Vec3 A = *this;
+        Vec3 B = vec3;
+        Vec3 C;
+        C.x = (A.y * B.z) - (A.z * B.y);
+        C.y = (A.z * B.x) - (A.x * B.z);
+        C.z = (A.x * B.y) - (A.y * B.x);
+        return C;
     }
 
     __device__ __host__ float dot(Vec3 vec3) {

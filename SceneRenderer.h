@@ -61,8 +61,20 @@ public:
 		}
 
 		// intialize every pixel to black
+		for (int i = 0; i < num_pixels; i++) {
+			Color& color = pixels[i];
+			color.r = 0;
+			color.g = 0;
+			color.b = 0;
+		}
 
 		// loop through every star-image-position and set her corresponding pixel to pink
+		for (int i = 0; i < num_stars; i++) {
+			int image_position = host_stars[i].image_position;
+			Color& color = pixels[image_position];
+			color.r = 255;
+			color.b = 255;
+		}
 
 		draw();
 	}

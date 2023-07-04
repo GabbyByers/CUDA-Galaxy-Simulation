@@ -2,7 +2,8 @@
 
 class CanvasCamera {
 public:
-	float depth;
+	float camera_depth;
+	float canvas_depth;
 	float theta;
 	Vec3 origin;
 	Vec3 vertical;
@@ -15,8 +16,9 @@ public:
 	Vec3 canvas_normal;
 
 	CanvasCamera() {
-		depth = 4.0f;
-		theta = 0.0f;
+		camera_depth = 4.0f;
+		canvas_depth = 2.0f;
+		theta = 1.0f;
 		origin = Vec3(0.0f, 0.0f, 0.0f);
 		vertical = Vec3(0.0f, 1.0f, 0.0f);
 	}
@@ -27,8 +29,8 @@ public:
 	}
 
 	void camera() {
-		camera_position.x = sin(theta) * depth;
-		camera_position.z = cos(theta) * depth * -1.0f;
+		camera_position.x = sin(theta) * camera_depth;
+		camera_position.z = cos(theta) * camera_depth * -1.0f;
 		camera_direction = origin - camera_position;
 		camera_direction.normalize();
 		camera_horizontal = camera_direction.cross(vertical);
@@ -37,7 +39,7 @@ public:
 	void canvas() {
 		canvas_position = camera_position;
 		canvas_position.normalize();
-		canvas_position *= 3.0f;
+		canvas_position *= canvas_depth;
 		canvas_normal = origin - canvas_position;
 		canvas_normal.normalize();
 	}

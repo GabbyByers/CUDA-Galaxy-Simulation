@@ -1,5 +1,7 @@
 #pragma once
 
+// this file is cursed... she compiles just fine... and works exactly as intended...
+
 class Game {
 public:
 	sf::RenderWindow* window = nullptr;
@@ -28,10 +30,13 @@ public:
 
 	void eventHandler() {
 		while (window->pollEvent(*event)) {
-			if (event->type == sf::Event::Closed)
+			if (event->type == sf::Event::Closed) {
 				window->close();
+				std::cout << "Simulation Ended\n";
+			}
 			if (event->key.code == sf::Keyboard::Enter) {
 				window->close();
+				std::cout << "Simulation Ended\n";
 			}
 		}
 	}

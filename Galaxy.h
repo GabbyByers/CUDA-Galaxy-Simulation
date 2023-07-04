@@ -25,16 +25,26 @@ public:
 						goto Exit;
 					}
 
-					float x = (2.0f * (static_cast<float>(i) / static_cast<float>(cube_root))) - 1.0f;
-					float y = (2.0f * (static_cast<float>(j) / static_cast<float>(cube_root))) - 1.0f;
-					float z = (2.0f * (static_cast<float>(k) / static_cast<float>(cube_root))) - 1.0f;
+					float x = 1.0f;
+					float y = 1.0f;
+					float z = 1.0f;
 
-					Star star(Vec3(x, y, z));
-					host_stars[i] = star;
+					Star& star = host_stars[i];
+					star.position = Vec3(x, y, z);
 				}
 			}
 		}
+
+
+
 	Exit:
+
+		for (int i = 0; i < num_stars; i++) {
+			Star& star = host_stars[i];
+			star.position.print();
+		}
+
+
 		device_stars = allocateDeviceStars(host_stars, num_stars);
 	}
 
