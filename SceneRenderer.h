@@ -14,16 +14,20 @@ public:
 	int num_pixels;
 	Color* pixels = nullptr;
 
+	int* star_image_positions = nullptr;
+
 	SceneRenderer(Game* game, Galaxy* galaxy) {
 		this->game = game;
 		this->galaxy = galaxy;
 		host_canvas_camera = new CanvasCamera;
 		device_canvas_camera = allocateDeviceCanvasCamera();
+		star_image_positions = new int[galaxy->num_stars];
 		initialize();
 	}
 
 	~SceneRenderer() {
 		delete host_canvas_camera;
+		delete[] star_image_positions;
 		freeDeviceCanvasCamera(device_canvas_camera);
 	}
 
@@ -50,10 +54,15 @@ public:
 		deviceStarProjection(device_stars, num_stars, device_canvas_camera);
 		copyDeviceStarsToHostStars(host_stars, device_stars, num_stars);
 
-		for (int i = 0; i < num_stars; i++) {
+		
+		for (int i = 0; i < num_stars; i++) { // TODO: should be done on the gpu
 			Star& star = host_stars[i];
-
+			star_image_positions[i] = star.image_position;
 		}
+
+		// intialize every pixel to black
+
+		// loop through every star-image-position and set her corresponding pixel to pink
 
 		draw();
 	}

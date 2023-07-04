@@ -20,7 +20,7 @@ public:
 	Vec3 pos;
 	Vec3 vel;
 
-	float x, y;
+	int image_position = 0;
 
 	Star() {}
 
@@ -41,7 +41,9 @@ public:
 		Vec3 canvas_projection = ray.at(t);
 
 		Vec3 barry = canvas_projection - canvas_camera->canvas_position;
-		x = barry.dot(canvas_camera->camera_horizontal);
-		y = barry.dot(canvas_camera->vertical);
+		float fx = barry.dot(canvas_camera->camera_horizontal);
+		float fy = barry.dot(canvas_camera->vertical);
+
+		//int ix = fx * 500;
 	}
 };
