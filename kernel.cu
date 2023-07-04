@@ -1,13 +1,32 @@
 ﻿#include "kernel.cuh"
 
-__global__ void gpuStarProjection(Star* stars, int num_stars) {
-    unsigned int i = (blockIdx.x * blockDim.x) + threadIdx.x;
-    if (i >= num_stars) {
+__global__ void gpuStarProjection(Star* device_stars, int num_stars, CanvasCamera* device_canvas_camera) {
+    unsigned int index = (blockIdx.x * blockDim.x) + threadIdx.x;
+    if (index >= num_stars) {
         return;
     }
+
+    Star& star = device_stars[index];
+    star.projection(device_canvas_camera);
 }
 
-Star* initializeDeviceStars(Star* host_stars, int num_stars) {
+// Canvas Camera
+CanvasCamera* allocateDeviceCanvasCamera() {
+    CanvasCamera* device_canvas_camera = nullptr;
+    cudaMalloc((void**)&device_canvas_camera, sizeof(CanvasCamera));
+    return device_canvas_camera;
+}
+
+void sendCanvasCameraToDevice(CanvasCamera* device_canvas_camera, CanvasCamera* host_canvas_camera) {
+    cudaMemcpy(device_canvas_camera, host_canvas_camera, sizeof(CanvasCamera), cudaMemcpyHostToDevice);
+}
+
+void freeDeviceCanvasCamera(CanvasCamera* device_canvas_camera) {
+    cudaFree(device_canvas_camera);
+}
+
+// Stars
+Star* allocateDeviceStars(Star* host_stars, int num_stars) {
     cudaSetDevice(0);
 
     Star* device_stars = nullptr;
@@ -18,12 +37,16 @@ Star* initializeDeviceStars(Star* host_stars, int num_stars) {
     return device_stars;
 }
 
-void deviceStarProjection(Star* host_stars, Star* device_stars, int num_stars) {
+void deviceStarProjection(Star* device_stars, int num_stars, CanvasCamera* device_canvas_camera) {
     unsigned int NUM_THREADS = 512;
     unsigned int NUM_BLOCKS = (num_stars + NUM_THREADS - 1) / NUM_THREADS;
-    gpuStarProjection <<<NUM_BLOCKS, NUM_THREADS>>> (device_stars, num_stars);
+    gpuStarProjection <<<NUM_BLOCKS, NUM_THREADS>>> (device_stars, num_stars, device_canvas_camera);
     cudaDeviceSynchronize();
 
+    
+}
+
+void copyDeviceStarsToHostStars(Star* host_stars, Star* device_stars, int num_stars) {
     cudaMemcpy(host_stars, device_stars, num_stars * sizeof(Star), cudaMemcpyDeviceToHost);
 }
 

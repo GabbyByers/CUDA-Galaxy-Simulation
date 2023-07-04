@@ -30,6 +30,9 @@ public:
 		while (window->pollEvent(*event)) {
 			if (event->type == sf::Event::Closed)
 				window->close();
+			if (event->key.code == sf::Keyboard::Enter) {
+				window->close();
+			}
 		}
 	}
 };

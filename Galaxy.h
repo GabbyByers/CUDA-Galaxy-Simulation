@@ -6,7 +6,9 @@ public:
 	Star* host_stars = nullptr;
 	Star* device_stars = nullptr;
 
-	Galaxy() {}
+	Galaxy() {
+		initializeHostStars();
+	}
 
 	void initializeHostStars() {
 		host_stars = new Star[num_stars];
@@ -33,7 +35,7 @@ public:
 			}
 		}
 	Exit:
-		return;
+		device_stars = allocateDeviceStars(host_stars, num_stars);
 	}
 
 	~Galaxy() {
